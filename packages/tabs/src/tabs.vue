@@ -10,6 +10,10 @@
 
     props: {
       type: String,
+      isxxbtabs: {
+        type: Boolean,
+        default: true
+      },
       activeName: String,
       closable: Boolean,
       addable: Boolean,
@@ -74,7 +78,7 @@
           this.$emit('input', value);
         };
         if (this.currentName !== value && this.beforeLeave) {
-          const before = this.beforeLeave(value, this.currentName);
+          const before = this.beforeLeave();
           if (before && before.then) {
             before.then(() => {
               changeCurrentName();
@@ -156,7 +160,8 @@
           'el-tabs': true,
           'el-tabs--card': type === 'card',
           [`el-tabs--${tabPosition}`]: true,
-          'el-tabs--border-card': type === 'border-card'
+          'el-tabs--border-card': type === 'border-card',
+          'el-tabs--xxbtabs': type === 'xxbtabs'
         }}>
           { tabPosition !== 'bottom' ? [header, panels] : [panels, header] }
         </div>

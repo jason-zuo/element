@@ -42,8 +42,7 @@
         changeOnSelect: false,
         popperClass: '',
         hoverTimer: 0,
-        clicking: false,
-        id: generateId()
+        clicking: false
       };
     },
 
@@ -98,6 +97,9 @@
           formatOptions(optionsCopy);
           return loadActiveOptions(optionsCopy);
         }
+      },
+      id() {
+        return generateId();
       }
     },
 
@@ -238,13 +240,6 @@
                 });
               };
               events.on[triggerEvent] = triggerHandler;
-              if (triggerEvent === 'mouseenter' && this.changeOnSelect) {
-                events.on.click = () => {
-                  if (this.activeValue.indexOf(item.value) !== -1) {
-                    this.$emit('closeInside', true);
-                  }
-                };
-              }
               events.on['mousedown'] = () => {
                 this.clicking = true;
               };

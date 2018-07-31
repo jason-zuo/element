@@ -13,8 +13,7 @@
           <button
             type="button"
             class="el-picker-panel__shortcut"
-            v-for="(shortcut, key) in shortcuts"
-            :key="key"
+            v-for="shortcut in shortcuts"
             @click="handleShortcutClick(shortcut)">{{shortcut.text}}</button>
         </div>
         <div class="el-picker-panel__body">
@@ -31,7 +30,7 @@
                   @input.native="handleDateInput($event, 'min')"
                   @change.native="handleDateChange($event, 'min')" />
               </span>
-              <span class="el-date-range-picker__time-picker-wrap" v-clickoutside="handleMinTimeClose">
+              <span class="el-date-range-picker__time-picker-wrap" v-clickoutside="() => minTimePickerVisible = false">
                 <el-input
                   size="small"
                   :disabled="rangeState.selecting"
@@ -62,7 +61,7 @@
                   @input.native="handleDateInput($event, 'max')"
                   @change.native="handleDateChange($event, 'max')" />
               </span>
-              <span class="el-date-range-picker__time-picker-wrap" v-clickoutside="handleMaxTimeClose">
+              <span class="el-date-range-picker__time-picker-wrap" v-clickoutside="() => maxTimePickerVisible = false">
                 <el-input
                   size="small"
                   :disabled="rangeState.selecting"
@@ -539,10 +538,6 @@
         }
       },
 
-      handleMinTimeClose() {
-        this.minTimePickerVisible = false;
-      },
-
       handleMaxTimePick(value, visible, first) {
         if (this.maxDate && value) {
           this.maxDate = modifyTime(this.maxDate, value.getHours(), value.getMinutes(), value.getSeconds());
@@ -555,10 +550,6 @@
         if (this.maxDate && this.minDate && this.minDate.getTime() > this.maxDate.getTime()) {
           this.minDate = new Date(this.maxDate);
         }
-      },
-
-      handleMaxTimeClose() {
-        this.maxTimePickerVisible = false;
       },
 
       // leftPrev*, rightNext* need to take care of `unlinkPanels`

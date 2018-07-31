@@ -26,7 +26,6 @@
         v-bind="$attrs"
         :type="type"
         :disabled="inputDisabled"
-        :readonly="readonly"
         :autocomplete="autoComplete"
         :value="currentValue"
         ref="input"
@@ -40,7 +39,7 @@
         :aria-label="label"
       >
       <!-- 前置内容 -->
-      <span class="el-input__prefix" v-if="$slots.prefix || prefixIcon">
+      <span class="el-input__prefix" v-if="$slots.prefix || prefixIcon" :style="prefixOffset">
         <slot name="prefix"></slot>
         <i class="el-input__icon"
            v-if="prefixIcon"
@@ -50,7 +49,8 @@
       <!-- 后置内容 -->
       <span
         class="el-input__suffix"
-        v-if="$slots.suffix || suffixIcon || showClear || validateState && needStatusIcon">
+        v-if="$slots.suffix || suffixIcon || showClear || validateState && needStatusIcon"
+        :style="suffixOffset">
         <span class="el-input__suffix-inner">
           <template v-if="!showClear">
             <slot name="suffix"></slot>
@@ -86,7 +86,6 @@
       ref="textarea"
       v-bind="$attrs"
       :disabled="inputDisabled"
-      :readonly="readonly"
       :style="textareaStyle"
       @focus="handleFocus"
       @blur="handleBlur"
@@ -127,6 +126,8 @@
           ? ''
           : this.value,
         textareaCalcStyle: {},
+        prefixOffset: null,
+        suffixOffset: null,
         hovering: false,
         focused: false,
         isOnComposition: false,
@@ -140,7 +141,6 @@
       resize: String,
       form: String,
       disabled: Boolean,
-      readonly: Boolean,
       type: {
         type: String,
         default: 'text'
@@ -192,6 +192,9 @@
       },
       inputDisabled() {
         return this.disabled || (this.elForm || {}).disabled;
+      },
+      isGroup() {
+        return this.$slots.prepend || this.$slots.append;
       },
       showClear() {
         return this.clearable &&
@@ -291,31 +294,16 @@
         }
       },
       calcIconOffset(place) {
-        let elList = [].slice.call(this.$el.querySelectorAll(`.el-input__${place}`) || []);
-        if (!elList.length) return;
-        let el = null;
-        for (let i = 0; i < elList.length; i++) {
-          if (elList[i].parentNode === this.$el) {
-            el = elList[i];
-            break;
-          }
-        }
-        if (!el) return;
         const pendantMap = {
-          suffix: 'append',
-          prefix: 'prepend'
+          'suf': 'append',
+          'pre': 'prepend'
         };
 
         const pendant = pendantMap[place];
+
         if (this.$slots[pendant]) {
-          el.style.transform = `translateX(${place === 'suffix' ? '-' : ''}${this.$el.querySelector(`.el-input-group__${pendant}`).offsetWidth}px)`;
-        } else {
-          el.removeAttribute('style');
+          return { transform: `translateX(${place === 'suf' ? '-' : ''}${this.$el.querySelector(`.el-input-group__${pendant}`).offsetWidth}px)` };
         }
-      },
-      updateIconOffset() {
-        this.calcIconOffset('prefix');
-        this.calcIconOffset('suffix');
       },
       clear() {
         this.$emit('input', '');
@@ -332,11 +320,10 @@
 
     mounted() {
       this.resizeTextarea();
-      this.updateIconOffset();
-    },
-
-    updated() {
-      this.$nextTick(this.updateIconOffset);
+      if (this.isGroup) {
+        this.prefixOffset = this.calcIconOffset('pre');
+        this.suffixOffset = this.calcIconOffset('suf');
+      }
     }
   };
 </script>

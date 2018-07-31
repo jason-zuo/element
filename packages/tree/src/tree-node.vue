@@ -31,7 +31,7 @@
         :class="{ 'is-leaf': node.isLeaf, expanded: !node.isLeaf && expanded }">
       </span>
       <el-checkbox
-        v-if="showCheckbox"
+        v-if="showCheckbox && node.isLeaf"
         v-model="node.checked"
         :indeterminate="node.indeterminate"
         :disabled="!!node.disabled"
@@ -167,7 +167,7 @@
         if (this.tree.expandOnClickNode) {
           this.handleExpandIconClick();
         }
-        if (this.tree.checkOnClickNode && !this.node.disabled) {
+        if (this.tree.checkOnClickNode) {
           this.handleCheckChange(null, {
             target: { checked: !this.node.checked }
           });

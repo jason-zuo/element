@@ -29,8 +29,7 @@ const defaults = {
   beforeClose: null,
   dangerouslyUseHTMLString: false,
   center: false,
-  roundButton: false,
-  distinguishCancelAndClose: false
+  roundButton: false
 };
 
 import Vue from 'vue';
@@ -60,7 +59,7 @@ const defaultCallback = action => {
         } else {
           currentMsg.resolve(action);
         }
-      } else if (currentMsg.reject && (action === 'cancel' || action === 'close')) {
+      } else if (action === 'cancel' && currentMsg.reject) {
         currentMsg.reject(action);
       }
     }

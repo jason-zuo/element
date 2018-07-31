@@ -6,7 +6,7 @@
   const firstUpperCase = str => {
     return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
   };
-
+  const element = 'el-tabs';
   export default {
     name: 'TabNav',
 
@@ -37,7 +37,10 @@
         scrollable: false,
         navOffset: 0,
         isFocus: false,
-        focusable: true
+        focusable: true,
+        barWidth: 0,
+        barOffset: 0,
+        currentWidth: 0
       };
     },
 
@@ -50,10 +53,42 @@
       },
       sizeName() {
         return ['top', 'bottom'].indexOf(this.rootTabs.tabPosition) !== -1 ? 'width' : 'height';
+      },
+      barStyle() {
+        let style = {
+          visibility: 'hidden',
+          width: `${this.barWidth}px`
+        };
+        if (this.type === 'xxbtabs') style.visibility = 'visible';
+        style.transform = `translate3d(${this.barOffset}px, 0px, 0px)`;
+        style.marginLeft = `-${Math.ceil(this.barWidth - this.currentWidth) / 2}px `;
+        return style;
       }
     },
 
     methods: {
+      clickItem(pane, tabName, ev) {
+        this.updateBar(pane.index);
+        this.onTabClick(pane, tabName, ev);
+      },
+      updateBar(index) {
+        this.$nextTick(() => {
+          const prevTabs = this.$refs.nav.querySelectorAll(`.${element}__item`);
+          const tab = prevTabs[index];
+          const colorBar = this.$refs.nav.querySelectorAll(`#${element}-xxbbar`)[0].offsetWidth ;
+          this.barWidth = tab ? parseFloat(colorBar) : 0;
+          this.currentWidth = tab.offsetWidth;
+          if (index > 0) {
+            let offset = 0;
+            for (let i = 0; i < index; i++) {
+              offset += parseFloat(prevTabs[i].offsetWidth) ;
+            }
+            this.barOffset = offset;
+          } else {
+            this.barOffset = 0;
+          }
+        });
+      },
       scrollPrev() {
         const containerSize = this.$refs.navScroll[`offset${firstUpperCase(this.sizeName)}`];
         const currentOffset = this.navOffset;
@@ -151,7 +186,7 @@
         tabList[nextIndex].click(); // 选中下一个tab
         this.setFocus();
       },
-      setFocus() {
+      setFocus(a) {
         if (this.focusable) {
           this.isFocus = true;
         }
@@ -189,7 +224,6 @@
         panes,
         editable,
         stretch,
-        onTabClick,
         onTabRemove,
         navStyle,
         scrollable,
@@ -197,7 +231,10 @@
         scrollPrev,
         changeTab,
         setFocus,
-        removeFocus
+        removeFocus,
+        barStyle,
+        clickItem,
+        updateBar
       } = this;
       const scrollBtn = scrollable
         ? [
@@ -208,7 +245,6 @@
       const tabs = this._l(panes, (pane, index) => {
         let tabName = pane.name || pane.index || index;
         const closable = pane.isClosable || editable;
-
         pane.index = `${index}`;
 
         const btnClose = closable
@@ -216,7 +252,13 @@
           : null;
 
         const tabLabelContent = pane.$slots.label || pane.label;
-        const tabindex = pane.active ? 0 : -1;
+        let tabindex;
+        if (pane.active) {
+          updateBar(pane.index);
+          tabindex = 0;
+        } else {
+          tabindex = -1;
+        }
         return (
           <div
             class={{
@@ -234,9 +276,9 @@
             ref="tabs"
             tabindex={tabindex}
             refInFor
-            on-focus={ ()=> { setFocus(); }}
+            on-focus={ ()=> { setFocus(pane); }}
             on-blur ={ ()=> { removeFocus(); }}
-            on-click={(ev) => { removeFocus(); onTabClick(pane, tabName, ev); }}
+            on-click={(ev) => { removeFocus(); clickItem(pane, tabName, ev); }}
             on-keydown={(ev) => { if (closable && (ev.keyCode === 46 || ev.keyCode === 8)) { onTabRemove(pane, ev);} }}
           >
             {tabLabelContent}
@@ -249,7 +291,7 @@
           {scrollBtn}
           <div class={['el-tabs__nav-scroll']} ref="navScroll">
             <div
-              class={['el-tabs__nav', `is-${ this.rootTabs.tabPosition }`, stretch && ['top', 'bottom'].indexOf(this.rootTabs.tabPosition) !== -1 ? 'is-stretch' : '']}
+              class={['el-tabs__nav', stretch && ['top', 'bottom'].indexOf(this.rootTabs.tabPosition) !== -1 ? 'is-stretch' : '', this.rootTabs.isxxbtabs ? 'xxbtabs' : '']}
               ref="nav"
               style={navStyle}
               role="tablist"
@@ -257,6 +299,11 @@
             >
               {!type ? <tab-bar tabs={panes}></tab-bar> : null}
               {tabs}
+              <div class="el-tabs__nav__before" style={barStyle}>
+                <div class="el-tabs__nav__before_inner" id="el-tabs-xxbbar">
+                  <i class="el-icon-caret-bottom"></i>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -278,3 +325,4 @@
     }
   };
 </script>
+

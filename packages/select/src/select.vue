@@ -339,7 +339,7 @@
         this.cachedPlaceHolder = this.currentPlaceholder = val;
       },
 
-      value(val, oldVal) {
+      value(val) {
         if (this.multiple) {
           this.resetInputHeight();
           if (val.length > 0 || (this.$refs.input && this.query !== '')) {
@@ -355,9 +355,6 @@
         this.setSelected();
         if (this.filterable && !this.multiple) {
           this.inputLength = 20;
-        }
-        if (!valueEquals(val, oldVal)) {
-          this.dispatch('ElFormItem', 'el.form.change', val);
         }
       },
 
@@ -506,14 +503,13 @@
       emitChange(val) {
         if (!valueEquals(this.value, val)) {
           this.$emit('change', val);
+          this.dispatch('ElFormItem', 'el.form.change', val);
         }
       },
 
       getOption(value) {
         let option;
         const isObject = Object.prototype.toString.call(value).toLowerCase() === '[object object]';
-        const isNull = Object.prototype.toString.call(value).toLowerCase() === '[object null]';
-
         for (let i = this.cachedOptions.length - 1; i >= 0; i--) {
           const cachedOption = this.cachedOptions[i];
           const isEqual = isObject
@@ -525,7 +521,7 @@
           }
         }
         if (option) return option;
-        const label = (!isObject && !isNull)
+        const label = !isObject
           ? value : '';
         let newOption = {
           value: value,
@@ -851,6 +847,9 @@
 
       this.$on('handleOptionClick', this.handleOptionSelect);
       this.$on('setSelected', this.setSelected);
+      this.$on('fieldReset', () => {
+        this.dispatch('ElFormItem', 'el.form.change');
+      });
     },
 
     mounted() {

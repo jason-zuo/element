@@ -50,10 +50,6 @@ export default {
     content: `## ${ComponentName}`
   },
   {
-    filename: path.join('../../examples/docs/es', `${componentname}.md`),
-    content: `## ${ComponentName}`
-  },
-  {
     filename: path.join('../../test/unit/specs', `${componentname}.spec.js`),
     content: `import { createTest, destroyVM } from '../util';
 import ${ComponentName} from 'packages/${componentname}';
@@ -70,22 +66,6 @@ describe('${ComponentName}', () => {
   });
 });
 `
-  },
-  {
-    filename: path.join('../../packages/theme-chalk/src', `${componentname}.scss`),
-    content: `@import "mixins/mixins";
-@import "common/var";
-
-@include b(${componentname}) {
-}`
-  },
-  {
-    filename: path.join('../../types', `${componentname}.d.ts`),
-    content: `import { ElementUIComponent } from './component'
-
-/** ${ComponentName} Component */
-export declare class El${ComponentName} extends ElementUIComponent {
-}`
   }
 ];
 

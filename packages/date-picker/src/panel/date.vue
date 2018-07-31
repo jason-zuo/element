@@ -13,8 +13,7 @@
           <button
             type="button"
             class="el-picker-panel__shortcut"
-            v-for="(shortcut, key) in shortcuts"
-            :key="key"
+            v-for="shortcut in shortcuts"
             @click="handleShortcutClick(shortcut)">{{ shortcut.text }}</button>
         </div>
         <div class="el-picker-panel__body">
@@ -27,7 +26,7 @@
                 @input="val => userInputDate = val"
                 @change="handleVisibleDateChange" />
             </span>
-            <span class="el-date-picker__editor-wrap" v-clickoutside="handleTimePickClose">
+            <span class="el-date-picker__editor-wrap" v-clickoutside="() => timePickerVisible = false">
               <el-input
                 ref="input"
                 @focus="timePickerVisible = true"
@@ -315,10 +314,6 @@
         if (!first) {
           this.timePickerVisible = visible;
         }
-      },
-
-      handleTimePickClose() {
-        this.timePickerVisible = false;
       },
 
       handleMonthPick(month) {

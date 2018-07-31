@@ -270,7 +270,7 @@ export default {
       fixed: this.fixed === '' ? true : this.fixed,
       filterMethod: this.filterMethod,
       filters: this.filters,
-      filterable: (this.filters && this.filters.length) || this.filterMethod,
+      filterable: this.filters || this.filterMethod,
       filterMultiple: this.filterMultiple,
       filterOpened: false,
       filteredValue: this.filteredValue || [],
@@ -279,17 +279,7 @@ export default {
       sortOrders: this.sortOrders
     });
 
-    let source = forced[type] || {};
-    for (let prop in source) {
-      if (source.hasOwnProperty(prop)) {
-        let value = source[prop];
-        if (value !== undefined) {
-          column[prop] = prop === 'className'
-            ? `${column[prop]} ${value}`
-            : value;
-        }
-      }
-    }
+    objectAssign(column, forced[type] || {});
 
     this.columnConfig = column;
 
@@ -414,18 +404,6 @@ export default {
     formatter(newVal) {
       if (this.columnConfig) {
         this.columnConfig.formatter = newVal;
-      }
-    },
-
-    className(newVal) {
-      if (this.columnConfig) {
-        this.columnConfig.className = newVal;
-      }
-    },
-
-    labelClassName(newVal) {
-      if (this.columnConfig) {
-        this.columnConfig.labelClassName = newVal;
       }
     }
   },

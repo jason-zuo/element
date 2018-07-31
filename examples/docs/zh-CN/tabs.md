@@ -102,7 +102,7 @@
 
 ```html
 <template>
-  <el-tabs v-model="activeName" @tab-click="handleClick">
+  <el-tabs v-model="activeName" @tab-click="handleClick" :isxxbtabs="true" type="xxbtabs">
     <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
     <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
     <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
@@ -375,7 +375,7 @@
 | value  | 绑定值，选中选项卡的 name  | string   |  —  |  第一个选项卡的 name |
 | tab-position  | 选项卡所在位置 | string   |  top/right/bottom/left  |  top |
 | stretch  | 标签的宽度是否自撑开 | boolean   |  -  |  false |
-| before-leave | 切换标签之前的钩子，若返回 false 或者返回 Promise 且被 reject，则阻止切换。 | Function(activeName, oldActiveName) | — | — |
+| before-leave | 切换标签之前的钩子，若返回 false 或者返回 Promise 且被 reject，则阻止切换。 | function | — | — |
 
 ### Tabs Events
 | 事件名称 | 说明 | 回调参数 |

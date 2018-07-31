@@ -79,11 +79,8 @@
           field.resetField();
         });
       },
-      clearValidate(props = []) {
-        const fields = props.length
-          ? this.fields.filter(field => props.indexOf(field.prop) > -1)
-          : this.fields;
-        fields.forEach(field => {
+      clearValidate() {
+        this.fields.forEach(field => {
           field.clearValidate();
         });
       },

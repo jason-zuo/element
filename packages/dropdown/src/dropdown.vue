@@ -66,14 +66,16 @@
         menuItems: null,
         menuItemsArray: null,
         dropdownElm: null,
-        focusing: false,
-        listId: `dropdown-menu-${generateId()}`
+        focusing: false
       };
     },
 
     computed: {
       dropdownSize() {
         return this.size || (this.$ELEMENT || {}).size;
+      },
+      listId() {
+        return `dropdown-menu-${generateId()}`;
       }
     },
 
