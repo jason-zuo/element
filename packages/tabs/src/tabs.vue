@@ -149,12 +149,12 @@
           <tab-nav { ...navData }></tab-nav>
         </div>
       );
+
       const panels = (
         <div class="el-tabs__content">
           {this.$slots.default}
         </div>
       );
-
       return (
         <div class={{
           'el-tabs': true,

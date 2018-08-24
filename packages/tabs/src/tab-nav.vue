@@ -61,7 +61,9 @@
         };
         if (this.type === 'xxbtabs') style.visibility = 'visible';
         style.transform = `translate3d(${this.barOffset}px, 0px, 0px)`;
-        style.marginLeft = `-${Math.ceil(this.barWidth - this.currentWidth) / 2}px `;
+        const barWidth = this.barWidth;
+        const itemWidth = this.currentWidth;
+        style.marginLeft = `${Math.ceil(itemWidth - barWidth) / 2}px `;
         return style;
       }
     },
@@ -236,6 +238,7 @@
         clickItem,
         updateBar
       } = this;
+      const tabsRight = this.rootTabs.$slots.rightSlot || '';
       const scrollBtn = scrollable
         ? [
           <span class={['el-tabs__nav-prev', scrollable.prev ? '' : 'is-disabled']} on-click={scrollPrev}><i class="el-icon-arrow-left"></i></span>,
@@ -299,6 +302,7 @@
             >
               {!type ? <tab-bar tabs={panes}></tab-bar> : null}
               {tabs}
+              {tabsRight}
               <div class="el-tabs__nav__before" style={barStyle}>
                 <div class="el-tabs__nav__before_inner" id="el-tabs-xxbbar">
                   <i class="el-icon-caret-bottom"></i>

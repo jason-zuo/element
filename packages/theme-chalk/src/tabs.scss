@@ -207,6 +207,7 @@
     }
   }
   @include m(xxbtabs) {
+    position: relative;
     > .el-tabs__header {
       border-bottom: 1px solid $--border-color-light;
     }
